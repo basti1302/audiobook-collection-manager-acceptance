@@ -1,0 +1,12 @@
+:d
+:del
+Feature: Display the list of audiobooks
+  In order to know which audiobooks the collection contains
+  As an audiobook enthusiast
+  I want to see a list of all audiobooks
+
+  Scenario: Execute cucumber
+    Given there is a cucumber that is 30 cm long
+    And a gherkin that is 8 cm long
+    When I glue them together
+    Then I should have a vegetable sculpture of 38 cm lentgth

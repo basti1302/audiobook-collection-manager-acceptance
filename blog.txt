@@ -3,7 +3,9 @@
 MENTION #lanuage: de for features and steps and show examples !!!
 
 
-A gentle introduction to acceptance tests with cucumber (for non-rubyists)
+A gentle introduction to acceptance testing with cucumber (for non-rubyists)
+
+This tutorial introduces cucumber, a BDD framework that can be used (among other things) to write acceptance tests for web applications. The targeted audience for this tutorial are people with no or only little ruby experience. It takes you through the installation and configuration of ruby and cucumber, shows you how to write your first cucumber feature and shows you how to use cucumber and capybara to write beautiful acceptance tests for a web application.
 
 
 cucumber on plain ruby
@@ -104,7 +106,7 @@ end
 
 After echoing the feature the result is listed. It complains that we did not define yet the steps that we have used in this feature. Quite true. But cucumber goes a step further - it even says how we can solve this and implement the steps (as stubs). How exceptionally nice and polite. It also guesses (correctly) that the numbers are not literal and might vary. So lets just paste cucumbers suggestion into a step definition.
 
-Create the directory {root}/features/step_definitions and in this directory the file first_steps.rb. Yes, step definitions are written in ruby - at least when we are using plain vanilla cucumber. There are cucumber ports for a multiude of languages, including Java, Perl, Javascript, ... so if you use one of those, you can write the step definitions in the language you are most comfortable with. However, this blog uses the original and so we are going to do some ruby now. Don't be afraid, step definitions don't need to be overly complicated and even if you are completely new to ruby you'll be able to learn enough of it to write step definitions in no time.
+Create the directory {root}/features/step_definitions and in this directory the file first_steps.rb. Yes, step definitions are written in ruby - at least when we are using plain vanilla cucumber. There are cucumber ports for a multiude of languages, (including Java, .NET, Python, Javascript, Perl, Erlang, PHP, Flex...) so chances are that you can write the step definitions in the language you are most comfortable with. However, this blog uses the original and so we are going to do some ruby now. Don't be afraid, step definitions don't need to be overly complicated and even if you are completely new to ruby you'll be able to learn enough of it to write step definitions in no time.
 
 == features/step_definitions/first_steps.rb (name does not matter, all steps will be loaded)
 
@@ -126,7 +128,6 @@ Then /^both are (\d+) cm long$/ do |arg1|
   pending # express the regexp above with the code you wish you had
 end
 
-
 Now just run cucumber again (remember, from the parent directory of features)
 
 The output only looks a little bit better:
@@ -147,7 +148,7 @@ The output only looks a little bit better:
 
 Does that look any better? The summary tells us that at least one step is pending and so the whole scenario is marked as pending. A scenario is skipped entirely when the first step fails (or is pending), so cucumber does not even try to execute the other pending steps - that's why it reports 3 steps as skipped.
 
-Before we implement the steps, let's take a close look on first_steps.rb. If you have never seen a cucumber step file before, it might look a little weird. The individual step implementations look a little bit like methods (in fact, they are methods) but the method header looks queer. It contains a regular expression. That is a very neat feature: When cucumber needs to find the implementation for a step in a scenario, it checks all steps in all step definition files. If it finds one with a matching regular expression, this implementation is called. (By the way, if it finds more than one match, it complains about an ambiguous match, instead of executing the first or an arbitrary step.)
+Before we implement the steps, let's take a close look on first_steps.rb. If you have never seen a cucumber step file before, it might look a little weird. The individual step implementations look a little bit like methods - in fact, they are ruby methods and the code inside is just plain ruby code. But the method header looks a bit queer - it contains a regular expression. That is a very neat feature: When cucumber needs to find the implementation for a step in a scenario, it checks all steps in all step definition files. If it finds one with a matching regular expression, this implementation is called. (By the way, if it finds more than one match, it complains about an ambiguous match, instead of executing the first or an arbitrary step.)
 
 This mechanism has several advantages. The first is flexible and well-readable parameterization of step definitions. We have already seen that in 
 
@@ -168,92 +169,60 @@ When I cut it in two
 
 (From the viewpoint of vegetable cutting, "cutting in halves" is better english than "cutting in half", but that's not the point here.)
 
-We could go even further and, for example, allow "bisect" instead of "cut it in halves" - and that's one of the pitfalls here: Don't take it to far. Only cater for the step variations that you really need right now. Don't make the regex too complicated or you'll soon be fighting regex matching ...
+Note that we used non-capturing groups (starting with "(?:") to cater for expressive variety. This is quite common in cucumber steps.
 
-Note that we used non-capturing groups (starting with "(?:" to cater for variety. This is common in cucumber steps.
+We could go even further and, for example, allow "bisect" instead of "cut it in halves" - and that's one of the caveats here: Don't take it too far. Only provide for the step variations that you really need right now. It might even make sense to write two steps if it is too difficult to put all variations into one regex. You have also two other options at your disposal to reduce duplication: First, you can put plain ruby methods into the step file and call them from your steps. You can also "require" other ruby files and reuse their code. Finally, you can even call other steps from within a step. So the advice is: Don't make the regex too complicated or you'll spend more time fighting with regular expressions than testing your system.
 
-Currently, all our steps contain only the word "pending". This is a like a todo marker. With pending, you can first write you scenario, stub all steps with "pending" and then implement the steps one after another until the scenario passes. This also fits nicely into an outside-in approach where you drive the implementation of the system under test with acceptance tests: 
+Now for what's inside a step implementation: Currently, all our steps only contain a call to "pending". This is a like a todo marker. With pending, you can first write you scenario, stub all steps with "pending" and then implement the steps one after another until the scenario passes. This also fits nicely into an outside-in approach where you drive the implementation of the system under test with acceptance tests: 
 * Write a cucumber feature first (with pending steps),
 * implement the first step in cucumber,
 * implement the required funcionality in the system under test to make just this step pass,
 * repeat.
 
+All this said, let's put some real implementation into the step methods:
 
-
-
-Now let's implement the steps:
-
-#encoding: utf-8
-
-Given /^(?:there is )?a cucumber that is (\d+) cm long$/ do |length|
-  @cucumber_length = length.to_i
+== features/step_definitions/first_steps.rb (name does not matter, all steps will be loaded)
+Given /^a cucumber that is (\d+) cm long$/ do |length|
+  @cucumber = {:color => 'green', :length => length.to_i}
 end
 
-Given /^(?:there is )?a gherkin that is (\d+) cm long$/ do |length|
-  @gherkin_length = length.to_i
+When /^I (?:cut|chop) (?:it|the cucumber) in (?:halves|half|two)$/ do
+  @choppedCucumbers = [           
+    {:color => @cucumber[:color], :length => @cucumber[:length] / 2},
+    {:color => @cucumber[:color], :length => @cucumber[:length] / 2}
+  ]
 end
 
-When /^I glue them together$/ do
-  @total_length = @cucumber_length + @gherkin_length
+Then /^I have two cucumbers$/ do
+  @choppedCucumbers.length.should == 2
 end
 
-Then /^I should have a vegetable sculpture of (\d+) cm lentgth$/ do |length|
-  @total_length.should == length.to_i
+Then /^both are (\d+) cm long$/ do |length|
+  @choppedCucumbers.each do |cuke|
+    cuke[:length].should == length.to_i
+  end
 end
 
-Yay!
+
+== Output
 1 scenario (1 passed)
 4 steps (4 passed)
 
-And all the steps are very, very green.
+Yay! Now all steps are printed in green - that's why the tool is called cucumber.
 
+The step implementations are quite silly (actually, the whole scenario is silly) and in this example we did not even test any production code - all the code is in the step file. But some of the basic concepts behind cucumber should have become clear now.
 
-[EXPLAIN @foo .. instance variable]
-
-We need to call to_i several times because the argument that comes from the regex-match is
-always a string. We could get rid of this nuisance by using a step argument [transformer](https://github.com/cucumber/cucumber/wiki/Step-Argument-Transforms)
+Remark: We need to call the method "to_i" in two places several times because the argument that comes from the regex-match is always a string. We could get rid of this nuisance by using a step argument [transformer](https://github.com/cucumber/cucumber/wiki/Step-Argument-Transforms)
 but let's not bother with that now.
 
-
-
-Testing adding numbers is quite boring so the next step is to test an actual web application.
+Enough with silly examples, let's test a real web application.
 
 [Explain how to set up audiobook collection manager]
 
+[Write a basic scenario which opens index.html and asserts that the menu and the add-button is there and maybe the list]
 
+[
+idea - we could use the nstore rest server from cucumber to inject test fixtures
+include some discussion about test data
+]
 
-
-
-
-
-
-
-
-
-
-!??!"=!"=!"!?")!?")!?"=)!??!"=!"=!"!?")!?")!?"=)!??!"=!"=!"!?")!?")!?"=)
-!??!"=!"=!"!?")!?")!?"=)!??!"=!"=!"!?")!?")!?"=)!??!"=!"=!"!?")!?")!?"=)
-!??!"=!"=!"!?")!?")!?"=)!??!"=!"=!"!?")!?")!?"=)!??!"=!"=!"!?")!?")!?"=)
-
-#encoding: utf-8
-
-Given a cucumber that is 30 cm long
-When I chop it in half
-Then I have two cucumbers
-And both are 15 cm long
-
-Given /^(?:there is )?a cucumber that is (\d+) cm long$/ do |length|
-  pending
-end
-
-Given /^(?:there is )?a gherkin that is (\d+) cm long$/ do |length|
-  pending
-end
-
-When /^I glue them together$/ do
-  pending
-end
-
-Then /^I should have a vegetable sculpture of (\d+) cm lentgth$/ do |length|
-  pending
-end
