@@ -1,0 +1,259 @@
+== TODOS ==
+
+MENTION #lanuage: de for features and steps and show examples !!!
+
+
+A gentle introduction to acceptance tests with cucumber (for non-rubyists)
+
+
+cucumber on plain ruby
+
+?? install ruby
+  (my recommendation: install rbenv, install c-ruby 1.9.x (I used 1.9.3p194))
+Install some dependencies: 
+sudo apt-get install libxslt-dev libxml2-dev
+
+?? install ruby-gems
+
+
+gem install bundler
+
+( gem install cucumber probably not needed -> bundler takes care of this )
+(or check gem install cucumber)
+
+bundle install
+
+cucumber --help or cucumber --version
+(this tutorial uses cucumber 1.2.1)
+
+= features/support/env.rb
+require 'rspec/expectations'
+World(RSpec::Matchers)
+
+== Some terminology
+
+The top most artifacts of cucumber are called features. They are defined in a DSL called gherkin that more or less resembles natural language. (How well the features resemble natural language of course depends of the author of the feature.) Feature files have the suffix ".feature" and live in a directory named "features". When the cucumber executable is started without arguments, it always looks for a subdirectory of the current working directory that has this name - so it's a good idea to start cucumber in the parent directory of "features", otherwise it will complain.
+
+A feature can contain a description (which is unparsed text) and one or more scenarios (think scenario ~ test). A scenarios describes one behavioral aspect of the system under test, that is, it makes assertions that - given that certain preconditions hold - the system behaves or responds in an expected way when a specified action is executed.
+
+A scenario is comprised of steps. Each step is a short sentence that falls into one of three categories: Given (setting up a precondition for the scenario), When (used to execute an action), Then (assert the desired outcome). On a technical level, it does not matter if you prefix a step with Given, When, Then or And (which can also used for all three categories). You could set up preconditions in a Then step and make assertions in a Given step - but using the conventions correctly makes scenarios much more readable.
+
+Further down the chain, there needs to be an implementation for each step. The implemented steps live in the directory features/step_definitions. We'll take a closer look at them later.
+
+== first feature ==
+
+== feature/first.feature
+#encoding: utf-8
+
+Feature: Showcase the simplest possible cucumber scenario
+  In order to verify that cucumber is installed and configured correctly
+  The aspiring BDD fanatic should be able to run this scenario
+  and see that the steps pass (green like a cuke)
+
+  Scenario: Cutting vegetables
+    Given a cucumber that is 30 cm long
+    When I cut it in halves
+    Then I have two cucumbers
+    And both are 15 cm long
+
+Now run the feature. Go to the root directory of the project (the directory directly above features)
+and type
+
+cucumber
+(Win: ?)
+
+The output should be something like:
+
+=== OUTPUT
+
+#encoding: utf-8
+Feature: Showcase the simplest possible cucumber scenario
+  In order to verify that cucumber is installed and configured correctly
+  As an aspiring BDD fanatic 
+  I should be able to run this scenario and see that the steps pass (green like a cuke)
+
+  Scenario: Execute cucumber            # features/first.feature:8
+    Given a cucumber that is 30 cm long # features/first.feature:9
+    When I cut it in halves             # features/first.feature:10
+    Then I have two cucumbers           # features/first.feature:11
+    And both are 15 cm long             # features/first.feature:12
+
+1 scenario (1 undefined)
+4 steps (4 undefined)
+0m0.002s
+
+You can implement step definitions for undefined steps with these snippets:
+
+Given /^a cucumber that is (\d+) cm long$/ do |arg1|
+  pending # express the regexp above with the code you wish you had
+end
+
+When /^I cut it in halves$/ do
+  pending # express the regexp above with the code you wish you had
+end
+
+Then /^I have two cucumbers$/ do
+  pending # express the regexp above with the code you wish you had
+end
+
+Then /^both are (\d+) cm long$/ do |arg1|
+  pending # express the regexp above with the code you wish you had
+end
+
+====
+
+After echoing the feature the result is listed. It complains that we did not define yet the steps that we have used in this feature. Quite true. But cucumber goes a step further - it even says how we can solve this and implement the steps (as stubs). How exceptionally nice and polite. It also guesses (correctly) that the numbers are not literal and might vary. So lets just paste cucumbers suggestion into a step definition.
+
+Create the directory {root}/features/step_definitions and in this directory the file first_steps.rb. Yes, step definitions are written in ruby - at least when we are using plain vanilla cucumber. There are cucumber ports for a multiude of languages, including Java, Perl, Javascript, ... so if you use one of those, you can write the step definitions in the language you are most comfortable with. However, this blog uses the original and so we are going to do some ruby now. Don't be afraid, step definitions don't need to be overly complicated and even if you are completely new to ruby you'll be able to learn enough of it to write step definitions in no time.
+
+== features/step_definitions/first_steps.rb (name does not matter, all steps will be loaded)
+
+#encoding: utf-8
+
+Given /^a cucumber that is (\d+) cm long$/ do |arg1|
+  pending # express the regexp above with the code you wish you had
+end
+
+When /^I cut it in havles$/ do
+  pending # express the regexp above with the code you wish you had
+end
+
+Then /^I have two cucumbers$/ do
+  pending # express the regexp above with the code you wish you had
+end
+
+Then /^both are (\d+) cm long$/ do |arg1|
+  pending # express the regexp above with the code you wish you had
+end
+
+
+Now just run cucumber again (remember, from the parent directory of features)
+
+The output only looks a little bit better:
+
+== OUTPUT
+ Scenario: Execute cucumber            # features/first.feature:8
+    Given a cucumber that is 30 cm long # features/step_definitions/first_steps.rb:3
+      TODO (Cucumber::Pending)
+      ./features/step_definitions/first_steps.rb:4:in `/^a cucumber that is (\d+) cm long$/'
+      features/first.feature:9:in `Given a cucumber that is 30 cm long'
+    When I cut it in halves             # features/step_definitions/first_steps.rb:7
+    Then I have two cucumbers           # features/step_definitions/first_steps.rb:11
+    And both are 15 cm long             # features/step_definitions/first_steps.rb:15
+
+1 scenario (1 pending)
+4 steps (3 skipped, 1 pending)
+
+
+Does that look any better? The summary tells us that at least one step is pending and so the whole scenario is marked as pending. A scenario is skipped entirely when the first step fails (or is pending), so cucumber does not even try to execute the other pending steps - that's why it reports 3 steps as skipped.
+
+Before we implement the steps, let's take a close look on first_steps.rb. If you have never seen a cucumber step file before, it might look a little weird. The individual step implementations look a little bit like methods (in fact, they are methods) but the method header looks queer. It contains a regular expression. That is a very neat feature: When cucumber needs to find the implementation for a step in a scenario, it checks all steps in all step definition files. If it finds one with a matching regular expression, this implementation is called. (By the way, if it finds more than one match, it complains about an ambiguous match, instead of executing the first or an arbitrary step.)
+
+This mechanism has several advantages. The first is flexible and well-readable parameterization of step definitions. We have already seen that in 
+
+Given /^a cucumber that is (\d+) cm long$/ do |arg1|
+
+Here The match of the of the first capturing group (enclosed in parantheses) is passed into the step implementation as the first argument (called "arg1" - we should probably rename it to "length"). The \d+ matches 1 or more digits, so it is clear that we need to pass a number here.
+
+The regular expression matching also gives you the ability to write scenarios that are nice to read, without duplication in the step file. Here's a simple example on how to exploit this: We could rewrite the second step as 
+
+When /^I (?:cut|chop) (?:it|the cucumber) in (?:halves|half|two)$/ do
+  pending # express the regexp above with the code you wish you had
+end
+
+With this change all of the following step calls would match
+When I cut the cucumber in halves
+When I chop the cucumber in half
+When I cut it in two
+
+(From the viewpoint of vegetable cutting, "cutting in halves" is better english than "cutting in half", but that's not the point here.)
+
+We could go even further and, for example, allow "bisect" instead of "cut it in halves" - and that's one of the pitfalls here: Don't take it to far. Only cater for the step variations that you really need right now. Don't make the regex too complicated or you'll soon be fighting regex matching ...
+
+Note that we used non-capturing groups (starting with "(?:" to cater for variety. This is common in cucumber steps.
+
+Currently, all our steps contain only the word "pending". This is a like a todo marker. With pending, you can first write you scenario, stub all steps with "pending" and then implement the steps one after another until the scenario passes. This also fits nicely into an outside-in approach where you drive the implementation of the system under test with acceptance tests: 
+* Write a cucumber feature first (with pending steps),
+* implement the first step in cucumber,
+* implement the required funcionality in the system under test to make just this step pass,
+* repeat.
+
+
+
+
+Now let's implement the steps:
+
+#encoding: utf-8
+
+Given /^(?:there is )?a cucumber that is (\d+) cm long$/ do |length|
+  @cucumber_length = length.to_i
+end
+
+Given /^(?:there is )?a gherkin that is (\d+) cm long$/ do |length|
+  @gherkin_length = length.to_i
+end
+
+When /^I glue them together$/ do
+  @total_length = @cucumber_length + @gherkin_length
+end
+
+Then /^I should have a vegetable sculpture of (\d+) cm lentgth$/ do |length|
+  @total_length.should == length.to_i
+end
+
+Yay!
+1 scenario (1 passed)
+4 steps (4 passed)
+
+And all the steps are very, very green.
+
+
+[EXPLAIN @foo .. instance variable]
+
+We need to call to_i several times because the argument that comes from the regex-match is
+always a string. We could get rid of this nuisance by using a step argument [transformer](https://github.com/cucumber/cucumber/wiki/Step-Argument-Transforms)
+but let's not bother with that now.
+
+
+
+Testing adding numbers is quite boring so the next step is to test an actual web application.
+
+[Explain how to set up audiobook collection manager]
+
+
+
+
+
+
+
+
+
+
+
+
+!??!"=!"=!"!?")!?")!?"=)!??!"=!"=!"!?")!?")!?"=)!??!"=!"=!"!?")!?")!?"=)
+!??!"=!"=!"!?")!?")!?"=)!??!"=!"=!"!?")!?")!?"=)!??!"=!"=!"!?")!?")!?"=)
+!??!"=!"=!"!?")!?")!?"=)!??!"=!"=!"!?")!?")!?"=)!??!"=!"=!"!?")!?")!?"=)
+
+#encoding: utf-8
+
+Given a cucumber that is 30 cm long
+When I chop it in half
+Then I have two cucumbers
+And both are 15 cm long
+
+Given /^(?:there is )?a cucumber that is (\d+) cm long$/ do |length|
+  pending
+end
+
+Given /^(?:there is )?a gherkin that is (\d+) cm long$/ do |length|
+  pending
+end
+
+When /^I glue them together$/ do
+  pending
+end
+
+Then /^I should have a vegetable sculpture of (\d+) cm lentgth$/ do |length|
+  pending
+end
