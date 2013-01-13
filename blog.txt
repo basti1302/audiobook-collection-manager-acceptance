@@ -28,6 +28,9 @@ bundle install
 cucumber --help or cucumber --version
 (this tutorial uses cucumber 1.2.1)
 
+install PhantomJS:
+Go to http://phantomjs.org/download.html and follow the appropriate steps for your OS.
+
 = features/support/env.rb
 require 'rspec/expectations'
 World(RSpec::Matchers)
@@ -104,7 +107,7 @@ end
 
 ====
 
-After echoing the feature the result is listed. It complains that we did not define yet the steps that we have used in this feature. Quite true. But cucumber goes a step further - it even says how we can solve this and implement the steps (as stubs). How exceptionally nice and polite. It also guesses (correctly) that the numbers are not literal and might vary. So lets just paste cucumbers suggestion into a step definition.
+After echoing the feature the result is listed. It complains that we did not define yet the steps that we have used in this feature. Quite true. But cucumber goes a step further - it even says how we can solve this and implement the steps (as stubs). How exceptionally nice and polite. It also guesses (correctly) that the numbers are not literal and might vary. So lets just paste cucumbers suggestion into a step definition. (In fact I often run cucumber intentionally with undefined steps and use the suggestions as a template for the step implementations.)
 
 Create the directory {root}/features/step_definitions and in this directory the file first_steps.rb. Yes, step definitions are written in ruby - at least when we are using plain vanilla cucumber. There are cucumber ports for a multiude of languages, (including Java, .NET, Python, Javascript, Perl, Erlang, PHP, Flex...) so chances are that you can write the step definitions in the language you are most comfortable with. However, this blog uses the original and so we are going to do some ruby now. Don't be afraid, step definitions don't need to be overly complicated and even if you are completely new to ruby you'll be able to learn enough of it to write step definitions in no time.
 
@@ -226,3 +229,11 @@ idea - we could use the nstore rest server from cucumber to inject test fixtures
 include some discussion about test data
 ]
 
+Capybara: https://github.com/jnicklas/capybara/
+Docs: http://rubydoc.info/github/jnicklas/capybara/master/Capybara
+
+cucumber features/list-audiobooks.feature to only run that single feature.
+
+Note: Optional parts (as a opposed to several different, but non-optional alternatives) often need to begin with a space and they are written like this "(?: foo bar)?". Enclosing it in "(?:" and ")" makes it a non-capturing group and the question mark after the closing parantheses makes it optional.
+
+Note: It does not matter whether you begin a step implementation with Given, When or Then or even And. The step will be found, no matter if the opening word from the feature file and the step definition file match or not.
