@@ -10,20 +10,42 @@ This tutorial introduces cucumber, a BDD framework that can be used (among other
 
 cucumber on plain ruby
 
-?? install ruby
-  (my recommendation: install rbenv, install c-ruby 1.9.x (I used 1.9.3p194))
 Install some dependencies: 
-sudo apt-get install libxslt-dev libxml2-dev
 
-?? install ruby-gems
+ 1979  sudo apt-get update
+ 1980  sudo apt-get -y upgrade
 
+sudo apt-get install libxslt-dev libxml2-dev libssl-dev
+
+ 1981  sudo apt-get -y install build-essential git-core curl 
+ 1982  sudo apt-get -y install build-essential git-core-curllibssl-dev
+ 1983  sudo apt-get -y install build-essential git-core-curl libssl-dev
+ 1984  sudo apt-get -y install build-essential git-core curl libssl-dev libyaml-dev
+ 1985  sudo apt-get -y install
+ 1986  sudo apt-get -y install libsqlite3-dev
+ 1987  sudo apt-get -y install libreadline-dev
+ 1988  sudo apt-get -y install zlib1g zlib1g-dev
+ 1989  sudo apt-get -y install libmysqlclient-dev libcurl14-openssl-dev
+ 1990  sudo apt-get -y install libssl-dev
+ 1991  sudo apt-get -y install libxslt-dev libxml12-dev
+ 1992  sudo apt-get -y install libxslt-dev libxml2-dev
+ 1993  sudo apt-get -y install libcurl4-openssl-dev
+
+
+?? install ruby
+  (my recommendation: install it via rbenv, to be able to run multiple ruby installations, for example see https://gist.github.com/1631411)
+
+>>> Or just install plain ruby
+
+ used 1.9.3p194
 
 gem install bundler
 
-( gem install cucumber probably not needed -> bundler takes care of this )
-(or check gem install cucumber)
+rbenv rehash
 
 bundle install
+
+rbenv rehash
 
 cucumber --help or cucumber --version
 (this tutorial uses cucumber 1.2.1)

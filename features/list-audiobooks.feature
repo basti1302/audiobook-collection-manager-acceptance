@@ -10,17 +10,17 @@ Feature: Display the list of audiobooks
     Then I see all audiobooks
 
   Scenario: Filter the list
-   Given some audiobooks in the collection
-   When I visit the list of audiobooks
-   And I search for "Cor"
-   Then I only see titles matching the search term
-   When I remove the filter
-   Then I see all audiobooks again
+    Given some audiobooks in the collection
+    When I visit the list of audiobooks
+    And I search for "Cor"
+    Then I only see titles matching the search term
+    When I remove the filter
+    Then I see all audiobooks again
 
   Scenario: Sort the list
-   Given some audiobooks in the collection
-   When I visit the list of audiobooks
-   And sort by "Author"
-   Then I see "Man In The Dark" listed first
-   And "Coraline" listed second
-   And "Siddhartha" listed third
+    Given some audiobooks in the collection
+    When I visit the list of audiobooks
+    And sort by "Author"
+    Then I see "Man In The Dark" listed first
+    And "Coraline" listed second
+    And "Siddhartha" listed third

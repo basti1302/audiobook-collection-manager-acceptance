@@ -9,13 +9,13 @@ When /^I visit the list of audiobooks$/ do
 end
 
 Then /^I see the application name$/ do
-  page.has_content?('Audiobook Collection Manager')
+  page.should have_content 'Audiobook Collection Manager'
 end
 
 Then /^I see all audiobooks(?: again)?$/ do
-  page.has_content?('Coraline')
-  page.has_content?('Man In The Dark')
-  page.has_content?('Siddharta')
+  page.should have_content 'Coraline'
+  page.should have_content 'Man In The Dark'
+  page.should have_content 'Siddhartha'
 end
 
 When /^I search for "(.*?)"$/ do |search_term|
@@ -25,17 +25,18 @@ When /^I search for "(.*?)"$/ do |search_term|
 end
 
 When /^I remove the filter$/ do
-  fill_in('filter', :with => '')
+  # funny, '' (empty string) does not work?
+  fill_in('filter', :with => ' ')
   @matching_titles = @not_matching_titles = nil 
 end
 
 Then /^I only see titles matching the search term$/ do
   @matching_titles.each do |title|
-    page.has_content?(title)
+    page.should have_content title
   end
 
   @not_matching_titles.each do |title|
-    page.has_no_content?(title)
+    page.should have_no_content title
   end
 end
 
