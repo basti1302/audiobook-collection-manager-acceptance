@@ -5,7 +5,7 @@ Given /^some audiobooks in the collection$/ do
 end
 
 When /^I visit the list of audiobooks$/ do
-  visit 'http://localhost:8000/app/index.html'
+  visit ui_url '/index.html'
 end
 
 Then /^I see the application name$/ do
@@ -53,3 +53,10 @@ Then /^(?:I see )?"(.*?)" listed (first|second|third)$/ do |title, position|
   end
 end
 
+def ui_url(path)
+  $audiobook_collection_manager_ui_base_url + path
+end
+
+def backend_url(path)
+  $nstore_rest_server_base_url + path
+end

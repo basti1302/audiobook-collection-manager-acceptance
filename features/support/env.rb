@@ -3,11 +3,11 @@ require 'capybara/cucumber'
 require 'capybara/poltergeist'
 
 if ENV['RUN_IN_BROWSER']
-  # To run tests in browser:
+  # On demand: non-headless tests via Selenium/WebDriver
+  # To run the scenarios in browser (default: Firefox), use the following command line:
   # RUN_IN_BROWSER=true cucumber
-  # or 
+  # or (to have a pause of 1 second between each step):
   # RUN_IN_BROWSER=true PAUSE=1 cucumber
-  # (to have a pause of 1 seconds between each step)
   Capybara.default_driver = :selenium
   AfterStep do
     sleep (ENV['PAUSE'] || 0).to_i
@@ -27,3 +27,7 @@ end
 
 Capybara.default_selector = :css
 World(RSpec::Matchers)
+
+# configure the base urls for frontend and backend here
+$audiobook_collection_manager_ui_base_url = 'http://localhost:8000/app/'
+$nstore_rest_server_base_url              = 'http://localhost:8888/'

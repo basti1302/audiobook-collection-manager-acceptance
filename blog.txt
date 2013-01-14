@@ -53,10 +53,6 @@ cucumber --help or cucumber --version
 install PhantomJS:
 Go to http://phantomjs.org/download.html and follow the appropriate steps for your OS.
 
-= features/support/env.rb
-require 'rspec/expectations'
-World(RSpec::Matchers)
-
 == Some terminology
 
 The top most artifacts of cucumber are called features. They are defined in a DSL called gherkin that more or less resembles natural language. (How well the features resemble natural language of course depends of the author of the feature.) Feature files have the suffix ".feature" and live in a directory named "features". When the cucumber executable is started without arguments, it always looks for a subdirectory of the current working directory that has this name - so it's a good idea to start cucumber in the parent directory of "features", otherwise it will complain.
@@ -244,7 +240,23 @@ Enough with silly examples, let's test a real web application.
 
 [Explain how to set up audiobook collection manager]
 
-[Write a basic scenario which opens index.html and asserts that the menu and the add-button is there and maybe the list]
+[Write a basic scenario which opens index.html and asserts that the menu and the list is there]
+
+I hope the test is green like a cuke for you (if not, drop a comment below).
+
+If you did some acceptance/ui testing before you may be confused the fact, that no browser opened. That is because the tests are configured to run headless - that is, without any browser. You can even run them on a server without X installed - and that's immensely valuable if you want to integrate them into your CI process. In my experience, browser based testing in a CI is always a hassle (it is of course possible and sometimes even neccessary, for example if automated cross browser testing is part of your testing strategy).
+
+You can however easily run these tests in browser, if you want to see for yourself what's going on.
+
+Use:
+"RUN_IN_BROWSER=true cucumber"
+
+or (to have a pause of 1 second between each step):
+
+"RUN_IN_BROWSER=true PAUSE=1 cucumber"
+
+Have a look at features/support/env.rb to see how that piece of configurability is implemented.
+
 
 [
 idea - we could use the nstore rest server from cucumber to inject test fixtures
@@ -259,3 +271,19 @@ cucumber features/list-audiobooks.feature to only run that single feature.
 Note: Optional parts (as a opposed to several different, but non-optional alternatives) often need to begin with a space and they are written like this "(?: foo bar)?". Enclosing it in "(?:" and ")" makes it a non-capturing group and the question mark after the closing parantheses makes it optional.
 
 Note: It does not matter whether you begin a step implementation with Given, When or Then or even And. The step will be found, no matter if the opening word from the feature file and the step definition file match or not.
+
+= features/support/env.rb
+... explain ...
+
+  # DEFAULT: headless tests with poltergeist/PhantomJS
+
+  # On demand: non-headless tests via Selenium/WebDriver
+  # To run the scenarios in browser (default: Firefox), use the following command line:
+  # RUN_IN_BROWSER=true cucumber
+  # or (to have a pause of 1 second between each step):
+  # RUN_IN_BROWSER=true PAUSE=1 cucumber
+
+
+
+
+
