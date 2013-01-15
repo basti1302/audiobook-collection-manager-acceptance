@@ -5,5 +5,6 @@ group :test do
   gem 'rspec-expectations'
   gem 'poltergeist'
   gem 'launchy'
+  gem 'rest-client'
 end
 

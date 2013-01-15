@@ -2,7 +2,7 @@ require 'rspec/expectations'
 require 'capybara/cucumber'
 require 'capybara/poltergeist'
 
-if ENV['RUN_IN_BROWSER']
+if ENV['IN_BROWSER']
   # On demand: non-headless tests via Selenium/WebDriver
   # To run the scenarios in browser (default: Firefox), use the following command line:
   # RUN_IN_BROWSER=true cucumber
@@ -31,3 +31,14 @@ World(RSpec::Matchers)
 # configure the base urls for frontend and backend here
 $audiobook_collection_manager_ui_base_url = 'http://localhost:8000/app/'
 $nstore_rest_server_base_url              = 'http://localhost:8888/'
+
+def ui_url(path)
+  $audiobook_collection_manager_ui_base_url + path
+end
+
+def backend_url(path)
+  $nstore_rest_server_base_url + path
+end
+
+# file with database fixtures
+$fixtures = 'features/support/fixtures.json'
