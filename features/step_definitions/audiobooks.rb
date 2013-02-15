@@ -8,16 +8,6 @@ When /^I visit the list of audiobooks$/ do
   visit ui_url '/index.html'
 end
 
-Then /^I see the application name$/ do
-  page.should have_content 'Audiobook Collection Manager'
-end
-
-Then /^I see all audiobooks(?: again)?$/ do
-  page.should have_content 'Coraline'
-  page.should have_content 'Man In The Dark'
-  page.should have_content 'Siddhartha'
-end
-
 When /^I search for "(.*?)"$/ do |search_term|
   fill_in('filter', :with => search_term)
   @matching_titles = ['Coraline']
@@ -30,6 +20,28 @@ When /^I remove the filter$/ do
   @matching_titles = @not_matching_titles = nil 
 end
 
+When /^(?:I )?sort by "(.*?)"$/ do |sort_criterion|
+  click_on sort_criterion
+end
+
+When /^select "(.*?)" from the menu$/ do |option|
+  click_link option
+end
+
+When /^click the button to add a new audiobook$/ do
+  click_link 'Add Audiobook'
+end
+
+Then /^I see the application name$/ do
+  page.should have_content 'Audiobook Collection Manager'
+end
+
+Then /^I see all audiobooks(?: again)?$/ do
+  page.should have_content 'Coraline'
+  page.should have_content 'Man In The Dark'
+  page.should have_content 'Siddhartha'
+end
+
 Then /^I only see titles matching the search term$/ do
   @matching_titles.each do |title|
     page.should have_content title
@@ -40,16 +52,15 @@ Then /^I only see titles matching the search term$/ do
   end
 end
 
-When /^(?:I )?sort by "(.*?)"$/ do |sort_criterion|
-  click_on(sort_criterion)
-end
-
 Then /^(?:I see )?"(.*?)" listed (first|second|third)$/ do |title, position|
   row = {'first' => '1', 'second' => '2', 'third' => '3'}[position]
-  within_table('list_audiobooks') do
+  within_table 'list_audiobooks' do
     within(:xpath, ".//tbody/tr[#{row}]") do
       page.should have_content title
     end
   end
 end
 
+Then /^I see the form\.\.\.$/ do
+  page.find('h1').should have_content 'Add a New Audiobook'
+end
