@@ -30,14 +30,14 @@ World(RSpec::Matchers)
 
 # configure the base urls for frontend and backend here
 $audiobook_collection_manager_ui_base_url = 'http://localhost:8000/app/'
-$nstore_rest_server_base_url              = 'http://localhost:8888/'
+$storra_rest_server_base_url              = 'http://localhost:8888/'
 
 def ui_url(path)
   $audiobook_collection_manager_ui_base_url + path
 end
 
 def backend_url(path)
-  $nstore_rest_server_base_url + path
+  $storra_rest_server_base_url + path
 end
 
 # file with database fixtures

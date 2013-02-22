@@ -259,7 +259,7 @@ Have a look at features/support/env.rb to see how that piece of configurability 
 
 
 [
-idea - we could use the nstore rest server from cucumber to inject test fixtures
+idea - we could use the storra rest server from cucumber to inject test fixtures
 include some discussion about test data
 ]
 
