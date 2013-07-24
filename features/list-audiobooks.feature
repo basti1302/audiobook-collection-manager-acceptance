@@ -7,7 +7,7 @@ Feature: Display the list of audiobooks
     Given some audiobooks in the collection
     When I visit the list of audiobooks
     Then I see the application name
-    Then I see all audiobooks
+    And I see all audiobooks
 
   Scenario: Filter the list
     Given some audiobooks in the collection
