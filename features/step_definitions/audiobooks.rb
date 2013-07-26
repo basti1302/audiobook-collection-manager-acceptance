@@ -17,7 +17,7 @@ end
 When /^I remove the filter$/ do
   # funny, '' (empty string) does not work?
   fill_in('filter', :with => ' ')
-  @matching_titles = @not_matching_titles = nil 
+  @matching_titles = @not_matching_titles = nil
 end
 
 When /^(?:I )?sort by "(.*?)"$/ do |sort_criterion|
@@ -47,10 +47,6 @@ end
 
 When /^save it$/ do
   click_button 'create'
-end
-
-Then /^I see the application name$/ do
-  page.should have_content 'Audiobook Collection Manager'
 end
 
 Then /^I see all audiobooks(?: again)?$/ do
