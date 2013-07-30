@@ -1,6 +1,10 @@
 #encoding: utf-8
 require 'rest_client'
 
+def delete_database(url)
+  RestClient.delete url
+end
+
 def upload_fixtures(url, filename)
 
   # read file line by line
