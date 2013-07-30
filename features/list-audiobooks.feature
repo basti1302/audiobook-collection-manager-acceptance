@@ -7,3 +7,11 @@ Feature: Display the list of audiobooks
     Given some audiobooks in the collection
     When I visit the list of audiobooks
     Then I see all audiobooks
+
+  Scenario: Filter the list
+    Given some audiobooks in the collection
+    When I visit the list of audiobooks
+    And I search for "Cor"
+    Then I only see titles matching the search term
+    When I remove the filter
+    Then I see all audiobooks again
