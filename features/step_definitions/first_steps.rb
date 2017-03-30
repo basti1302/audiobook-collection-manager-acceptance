@@ -12,12 +12,12 @@ When /^I (?:cut|chop) (?:it|the cucumber) in (?:halves|half|two)$/ do
 end
 
 Then /^I have two cucumbers$/ do
-  @choppedCucumbers.length.should == 2
+  expect(@choppedCucumbers.length).to eq(2)
 end
 
 Then /^both are (\d+) cm long$/ do |length|
   @choppedCucumbers.each do |cuke|
-    cuke[:length].should == length.to_i
+    expect(cuke[:length]).to eq(length.to_i)
   end
 end
 
